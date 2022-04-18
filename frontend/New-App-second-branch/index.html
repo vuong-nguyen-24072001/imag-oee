@@ -1,96 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./assets/css/main.css" />
+    <link rel="stylesheet" href="./assets/css/Chart.min.css" />
+    <link rel="stylesheet" href="./assets/css/grid.css" />
+    <title>Imag</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="./assets/css/main.css" />
-  <link rel="stylesheet" href="./assets/css/Chart.min.css" />
-  <link rel="stylesheet" href="./assets/css/grid.css" />
-  <title>Imag</title>
-</head>
-
-<body>
-  <div class="main">
-    <!-- GRID -->
-    <div class="grid container">
-      <div class="row">
-        <div class="col l-4 m-6 c-12 col-container">
-          <div class="table">
-            <div class="form hidden">
-              <div class="input-form">
-                <h3>Fill your value</h3>
-                <label for="target">Target</label>
-                <input type="number" name="" id="target" placeholder="target" class="target" />
-                <label for="speed" class="label-speed">Speed</label>
-                <input type="number" name="" id="speed" placeholder="speed" class="speed" />
-              </div>
-              <button class="btn btn-submit">Submit</button>
-            </div>
-            <div class="grid grid-1">
-              <div class="row">
-                <div class="col l-6 m-6 c-6">
-                  <div class="table-content">
-                    <h2>Line 1</h2>
-                    <table>
-                      <tr>
-                        <th>Target</th>
-                        <th>FGs</th>
-                      </tr>
-                      <tr>
-                        <td class="target">6000</td>
-                        <td class="fgs">4345</td>
-                      </tr>
-                    </table>
-                  </div>
-                </div>
-                <div class="col l-6 m-6 c-6">
-                  <div class="table-content">
-                    <h2 class="status">Running</h2>
-                    <table>
-                      <tr>
-                        <th>Run Time</th>
-                        <th>Down Time</th>
-                      </tr>
-                      <tr>
-                        <td class="runtime">144</td>
-                        <td>25</td>
-                      </tr>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col l-6 m-6 c-6">
-                  <canvas id="chart-APQ" class="chart-APQ"></canvas>
-                </div>
-                <div class="col l-6 m-6 c-6">
-                  <canvas id="chart-pie" style="position: relative; height: 166px; width: 200px"
-                    class="chart-pie"></canvas>
-                </div>
-                <div class="col l-12 m-12 c-12">
-                  <canvas id="myChart" class="chart-data"></canvas>
-                </div>
-              </div>
-              <div class="btn-container">
-                <button class="btn-reset btn">Reset Data</button>
-                <button class="btn btn-1">Setting</button>
+  <body>
+    <div class="container">
+      <div class="wrap">
+        <div class="form hidden">
+          <div class="input-form">
+            <h3>Fill your value</h3>
+            <label for="target">Target</label>
+            <input
+              type="number"
+              name=""
+              id="target"
+              placeholder="target"
+              class="target"
+            />
+            <label for="speed" class="label-speed">Speed</label>
+            <input type="number" name="" id="speed" placeholder="speed" class="speed" />
+          </div>
+          <button class="btn btn-submit">Submit</button>
+        </div>
+        <div class="filter-section">
+          <div class="status">
+            <div class="connect">
+              <p>PLC</p>
+              <div class="status-container">
+                <img
+                  src="/frontend/New-App-second-branch//assets/img/connected.svg"
+                  alt=""
+                  class="icon-connect"
+                />
+                <div class="plc-status">Connected</div>
               </div>
             </div>
+            <div class="disconnect">
+              <p>PC</p>
+              <div class="status-container">
+                <img
+                  src="/frontend/New-App-second-branch//assets/img/disconnect.svg"
+                  alt=""
+                  class="icon-connect"
+                />
+                <div class="pc-status">Disconnect</div>
+              </div>
+            </div>
+          </div>
+          <div class="filter-line">
+            <select class="select-options">
+              <option value="audi" selected>GN5.1</option>
+              <option value="volvo">2</option>
+              <option value="saab">3</option>
+              <option value="vw">4</option>
+            </select>
+            <select class="select-options">
+              <option value="audi" selected>Shift 1</option>
+              <option value="volvo">Shift 2</option>
+              <option value="saab">Shift 3</option>
+              <option value="vw">Shift 4</option>
+            </select>
+          </div>
+          <div class="filter-date">
+            <input
+              type="date"
+              value="2022-02-20"
+              min="2022-02-20"
+              max="2032-02-20"
+              class="input-date"
+            />
+            <button class="search-btn">Search</button>
+          </div>
+        </div>
+        <div class="row top-table">
+          <div class="col l-6 m-6 c-6">
+            <div class="btn-container">
+              <button class="btn-reset btn">Clear Data</button>
+              <button class="btn btn-1">Setting</button>
+            </div>
+            <div class="table-content">
+              <table>
+                <tr>
+                  <th>Target</th>
+                  <th>FGs</th>
+                </tr>
+                <tr>
+                  <td class="table-td target">6000</td>
+                  <td class="table-td fgs">4345</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="col l-6 m-6 c-6">
+            <div class="running-container">
+              <p class="running status">Running</p>
+            </div>
+            <div class="table-content">
+              <table>
+                <tr>
+                  <th>Run Time</th>
+                  <th>Down Time</th>
+                </tr>
+                <tr>
+                  <td class="table-td runtime">144</td>
+                  <td class="table-td">25</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col l-6 m-6 c-6">
+            <canvas id="chart-APQ" class="chart-APQ"></canvas>
+          </div>
+          <div class="col l-6 m-6 c-6">
+            <canvas
+              id="chart-pie"
+              style="position: relative; height: 166px; width: 200px"
+              class="chart-pie"
+            ></canvas>
+          </div>
+          <div class="col l-12 m-12 c-12">
+            <canvas id="myChart" class="chart-data"></canvas>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</body>
-<script src="./assets/js/Chart.min.js"></script>
-<script src="./assets/js/chartAPQ.js"></script>
-<script src="./assets/js/chartPie.js"></script>
-<script src="./assets/js/dataChart.js"></script>
-<script src="./assets/js/sockjs.min.js"></script>
-<script src="./assets/js/stomp.min.js"></script>
-<script src="./assets/js/SocketToServer.js"></script>
-<script src="./assets/js/main.js"></script>
-
+  </body>
+  <script></script>
+  <script src="./assets/js/Chart.min.js"></script>
+  <script src="./assets/js/chartAPQ.js"></script>
+  <script src="./assets/js/chartPie.js"></script>
+  <script src="./assets/js/dataChart.js"></script>
+  <script src="./assets/js/main.js"></script>
 </html>
