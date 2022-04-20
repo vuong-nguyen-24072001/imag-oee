@@ -1,15 +1,15 @@
 package com.commplc.Repository;
+import com.commplc.Entity.Line1Entity;
 
-import com.commplc.Entity.DataEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-public interface DataRepository extends JpaRepository<DataEntity, Long> {
-
+public interface Line1Repository extends JpaRepository<Line1Entity, Long> {
+    
     @Modifying
     @Query(
-            value = "truncate table data",
+            value = "truncate table line1",
             nativeQuery = true
     )
     void truncateTable();

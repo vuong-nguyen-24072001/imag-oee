@@ -4,11 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "data")
-public class DataEntity extends BaseEntity { 
+@Table(name = "historyline1")
+public class HistoryLine1Entity extends BaseEntity {
 
-    public DataEntity(String line, String status, String speed, String counterOut, String runtime, String time, 
-                      String date, String shift, String target) {
+    public HistoryLine1Entity(String line, String status, String speed, String counterOut, String runtime, String time, String date, String shift) {
         this.setLine(line);
         this.setStatus(status);
         this.setSpeed(speed);
@@ -17,10 +16,9 @@ public class DataEntity extends BaseEntity {
         this.setTime(time);
         this.setDate(date);
         this.setShift(shift);
-        this.setTarget(target);
     }
 
-    public DataEntity() {
+    public HistoryLine1Entity() {
 
     }
 }

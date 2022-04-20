@@ -1,11 +1,12 @@
 package com.commplc.Service;
 
 import com.commplc.Constant.SystemPLC;
-import com.commplc.Entity.DataEntity;
-import com.commplc.Repository.DataRepository;
+import com.commplc.Entity.Line1Entity;
+import com.commplc.Repository.Line1Repository;
 import com.commplc.Utils.ConnectPLC;
 import com.commplc.Utils.ReadDataPLC;
 import com.commplc.Utils.WriteDataToExcel;
+import com.commplc.Variable.TimeVariable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -13,8 +14,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,21 +32,25 @@ public class RealtimeDataPLC {
     private HashMap<String, String>[] result;
 
     @Autowired
-    private DataRepository dataRepository;
-
-    @Autowired
     private SimpMessagingTemplate template;
 
-    @Scheduled(fixedDelay = 1000)
+    @Autowired
+    private TimeVariable timeVariable;
+
+    @Autowired
+    private Line1Repository line1Repository;
+
+    @Scheduled(fixedDelay = 800)
     public void readData100Ms() {
         System.out.println("Shceduled");
         updateShift();
         if (ConnectPLC.checkConnect()){
             List<Long> test32 = ReadDataPLC.readDataUnitIntFromPlc(ConnectPLC.getMelsecNet());
             List<Short> test16 = ReadDataPLC.readDataInt16FromPlc(ConnectPLC.getMelsecNet());
+            List<Short> targets = ReadDataPLC.readTargetFromPlc(ConnectPLC.getMelsecNet());
             result = new HashMap[SystemPLC.NUMBER_LINE];
             for (int i = 0; i < SystemPLC.NUMBER_LINE; i++) {
-                result[i] = caculate(i, test16, test32);
+                result[i] = caculate(i, test16, test32, targets);
             }
             WriteDataToExcel.writeDataExcel(result);
             historyData = result;
@@ -60,9 +68,35 @@ public class RealtimeDataPLC {
         }
     }
 
-    private HashMap<String, String> caculate(Integer line, List<Short> data16, List<Long> data32) {
+    @Scheduled(fixedDelay = 900)
+    public void caculateUsedTime() {
+
+        for (int line = 1; line < SystemPLC.NUMBER_LINE; line++) {
+            // demo 1 line (line 1)
+            if (line == 1) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String timeMark = timeVariable.getMarkTime(1);
+                String timeNow = LocalDate.now().toString() + " " + LocalTime.now().toString();
+                try {
+                    Date mark = format.parse(timeMark);
+                    Date now = format.parse(timeNow);
+                    Long diff = now.getTime() - mark.getTime();
+                    Long diffSeconds = diff / 1000 % 60;  
+                    Long diffMinutes = diff / (60 * 1000) % 60; 
+                    Long diffHours = diff / (60 * 60 * 1000);
+                    timeVariable.setUsedTimeLine(line, diffHours*3600 + diffMinutes*60 + diffSeconds);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    private HashMap<String, String> caculate(Integer line, List<Short> data16, List<Long> data32, List<Short> targets) {
         HashMap<String, String> result = new HashMap<>();
         Integer numLine = line + 1;
+        String target = targets.get(line).toString();
         line = line*SystemPLC.NUMBER_START_DATA_INT16;
         String time = "" + LocalTime.now() + "";
         String date = "" + LocalDate.now() + "";
@@ -70,7 +104,18 @@ public class RealtimeDataPLC {
         Short speed = data16.get(line + 2);
         Integer baseData32 = (numLine - 1)*SystemPLC.NUMBER_START_DATA_UINT32;
         String counterOut = data32.get(baseData32).toString();
-        String runtime = data32.get(baseData32 + 1).toString();
+        Long runtime = data32.get(baseData32 + 1);
+        //test 1 line (line 1)
+        Long downtime = 0L;
+        if (numLine == 1) {
+            Long usedTime = timeVariable.getUsedTimeLine(numLine);
+            System.out.println("used time line 1: " + usedTime);
+            System.out.println("runtime line 1: " + runtime);
+            if (usedTime != 0 && usedTime > 0) {
+                downtime = timeVariable.getUsedTimeLine(numLine) - runtime;
+                System.out.println(downtime);
+            }
+        }
 
         result.put("time", time);
         result.put("date", date);
@@ -78,16 +123,24 @@ public class RealtimeDataPLC {
         result.put("status", status.toString());
         result.put("counterOut", counterOut);
         result.put("speed", speed.toString());
-        result.put("runtime", runtime);
+        result.put("runtime", runtime.toString());
+        result.put("target", target);
+        result.put("downtim", downtime.toString());
 
         return  result;
     }
 
     private void write(HashMap<String, String>[] result) {
         for (HashMap<String, String> aResult : result) {
-            DataEntity data = new DataEntity(aResult.get("line"), aResult.get("status"), aResult.get("speed"),
-                    aResult.get("counterOut"), aResult.get("runtime"), aResult.get("time"), aResult.get("date"), shift);
-            dataRepository.save(data);
+            // DataEntity data = new DataEntity(aResult.get("line"), aResult.get("status"), aResult.get("speed"),
+            //         aResult.get("counterOut"), aResult.get("runtime"), aResult.get("time"), aResult.get("date"), shift, aResult.get("target"));
+            // dataRepository.save(data);
+            switch(aResult.get("line")) {
+                case "1":
+                    line1Repository.save(new Line1Entity(aResult.get("line"), aResult.get("status"), aResult.get("speed"),
+                    aResult.get("counterOut"), aResult.get("runtime"), aResult.get("time"), aResult.get("date"), shift, aResult.get("target")));
+                    break;
+            }
         }
     }
 

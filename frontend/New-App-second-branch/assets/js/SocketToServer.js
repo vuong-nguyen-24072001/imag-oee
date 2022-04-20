@@ -22,21 +22,16 @@ function onMessageReceived(payload) {
   console.log(dataLine);
   for (let i = 0; i < 12; i++) {
     if (i == 0) {
-      // j = 2 * i;
-      // target[j].value = dataLine[i].counterOut;
-      // target[j + 1].textContent = dataLine[i].counterOut;
-      speed[i].value = dataLine[i].speed;
+      target[i].value = dataLine[i].target;
       runtime[i].textContent = dataLine[i].runtime;
       stt[i].textContent = dataLine[i].status == "1" ? "Running" : "Stop";
       fgs[i].textContent = dataLine[i].counterOut;
+      const testBarChart = barChart[i];
+      testBarChart.data.datasets[0].data[0] = dataLine[i].counterOut;
+      testBarChart.data.datasets[0].data[1] = dataLine[i].target;
+      testBarChart.update();
     }
   }
-  const dataLine1 = data[0];
-  const counterOutLine1 = dataLine1.counterOut;
-  const testBarChart = barChart[0];
-  testBarChart.data.datasets[0].data[0] = counterOutLine1;
-  console.log(counterOutLine1);
-  testBarChart.update();
 }
 
 function onError(error) {

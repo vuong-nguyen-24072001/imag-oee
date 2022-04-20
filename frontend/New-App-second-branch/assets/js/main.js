@@ -4,6 +4,9 @@ const form = document.querySelector(".form");
 const btnReset = document.querySelector(".btn-reset");
 const inputSpeed = document.getElementById("speed");
 const inputTarget = document.getElementById("target");
+const speedAddress = document.getElementById("speedAddress");
+const targetAddress = document.getElementById("targetAddress");
+console.log(speedAddress);
 
 const target = document.querySelectorAll(".target");
 const speed = document.querySelectorAll(".speed");
@@ -18,7 +21,9 @@ btnSetting.addEventListener("click", function () {
 btnSubmmit.addEventListener("click", function () {
   const data = {
     speed: inputSpeed.value,
+    speedAddress: speedAddress.value,
     target: inputTarget.value,
+    targetAddress: targetAddress.value,
   };
   console.log(data);
   fetch("http://192.168.1.229:8081/setSpecification", {
