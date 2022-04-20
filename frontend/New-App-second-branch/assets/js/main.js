@@ -11,6 +11,7 @@ console.log(speedAddress);
 const target = document.querySelectorAll(".target");
 const speed = document.querySelectorAll(".speed");
 const runtime = document.querySelectorAll(".runtime");
+const downtime = document.querySelectorAll(".downtime");
 const stt = document.querySelectorAll(".status");
 const fgs = document.querySelectorAll(".fgs");
 

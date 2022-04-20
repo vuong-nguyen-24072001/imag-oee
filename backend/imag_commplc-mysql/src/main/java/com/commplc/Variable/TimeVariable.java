@@ -25,7 +25,7 @@ public class TimeVariable {
     public String getMarkTime(int line) {
         if (markTime[line - 1] == "" || markTimeCheckReset[line - 1] == true){
             List<HistoryLine1Entity> histories = historyLine1Service.findByDateAndShiftOrderByIdDesc(LocalDate.now().toString(), RealtimeDataPLC.shift);
-            if (histories != null) {
+            if (histories.size() != 0) {
                 markTime[line - 1] = histories.get(0).getDate() + " " + histories.get(0).getTime();
                 markTimeCheckReset[line - 1] = false;
             } else {

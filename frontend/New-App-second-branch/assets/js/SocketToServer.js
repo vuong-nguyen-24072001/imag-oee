@@ -24,6 +24,7 @@ function onMessageReceived(payload) {
     if (i == 0) {
       target[i].value = dataLine[i].target;
       runtime[i].textContent = dataLine[i].runtime;
+      downtime[i].textContent = dataLine[i].downtime;
       stt[i].textContent = dataLine[i].status == "1" ? "Running" : "Stop";
       fgs[i].textContent = dataLine[i].counterOut;
       const testBarChart = barChart[i];
