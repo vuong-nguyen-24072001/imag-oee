@@ -71,7 +71,7 @@ public class DataAPI {
                         String line = "line1";
                         int numLine = 1;
                         UrlSystem.setPathDataHistory(line);
-                        timeVariable.setMarkTime(numLine, "");
+                        timeVariable.setMarkTimeCheckReset(numLine, true);
                         Database.backup("root","vuongnguyen04040707","oee-db","line1", UrlSystem.pathDataHistory);
                         // for deploy to mysql docker
                         // Database.backup("root","root","oee-db",UrlSystem.pathDataHistory);
