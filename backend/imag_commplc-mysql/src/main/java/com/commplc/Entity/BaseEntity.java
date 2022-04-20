@@ -1,15 +1,14 @@
 package com.commplc.Entity;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.MappedSuperclass;
 
-@Entity
-@Table(name = "history")
-public class HistoryEntity {
+@MappedSuperclass
+public abstract class BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,22 +38,22 @@ public class HistoryEntity {
     private String shift;
 
     @Column(name = "target")
-    private String target;
+    private String target = "0";
 
-    public HistoryEntity(String line, String status, String speed, String counterOut, String runtime, String time, String date, String shift) {
-        this.line = line;
-        this.status = status;
-        this.speed = speed;
-        this.counterOut = counterOut;
-        this.runtime = runtime;
-        this.time = time;
-        this.date = date;
-        this.shift = shift;
-    }
+    @Column(name = "available")
+    private String available;
 
-    public HistoryEntity() {
+    @Column(name = "performance")
+    private String performance;
 
-    }
+    @Column(name = "quanlity")
+    private String quanlity;
+
+    @Column(name = "oee")
+    private String oee;
+
+    @Column(name = "downtime")
+    private String downtime;
 
     public Long getId() {
         return id;
@@ -77,7 +76,7 @@ public class HistoryEntity {
     }
 
     public String getSpeed() {
-        return speed;
+        return speed; 
     }
 
     public void setSpeed(String speed) {
@@ -131,4 +130,46 @@ public class HistoryEntity {
     public void setTarget(String target) {
         this.target = target;
     }
+
+    public String getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(String available) {
+        this.available = available;
+    }
+
+    public String getPerformance() {
+        return performance;
+    }
+
+    public void setPerformance(String performance) {
+        this.performance = performance;
+    }
+
+    public String getQuanlity() {
+        return quanlity;
+    }
+
+    public void setQuanlity(String quanlity) {
+        this.quanlity = quanlity;
+    }
+
+    public String getOee() {
+        return oee;
+    }
+
+    public void setOee(String oee) {
+        this.oee = oee;
+    }
+
+    public String getDowntime() {
+        return downtime;
+    }
+
+    public void setDowntime(String downtime) {
+        this.downtime = downtime;
+    }
+
+    
 }
