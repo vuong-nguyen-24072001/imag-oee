@@ -9,11 +9,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
+import com.commplc.Constant.UrlSystem;
+
 public class WriteDataToExcel {
 
     public static boolean outputState = false;
-
-    private static String excelDataPath = "./src/main/resources/DataExcel/Data.xlsx";
 
     private static FileInputStream inputStream = null;
 
@@ -25,7 +25,7 @@ public class WriteDataToExcel {
         try {
             outputState = false;
             if (inputStream == null) {
-                inputStream = new FileInputStream(new File(excelDataPath));
+                inputStream = new FileInputStream(new File(UrlSystem.excelDataPath));
                 workbook = WorkbookFactory.create(inputStream);
                 sheet = workbook.getSheetAt(0);
             }
@@ -35,10 +35,8 @@ public class WriteDataToExcel {
                 writeDataToTable(i + 1, sheet, hm);
             }
 
-            FileOutputStream outputStream = new FileOutputStream(excelDataPath);
-            System.out.println(outputStream);
+            FileOutputStream outputStream = new FileOutputStream(UrlSystem.excelDataPath);
             workbook.write(outputStream);
-            System.out.println("write success");
             //workbook.close();
             outputStream.close();
             outputState = true;

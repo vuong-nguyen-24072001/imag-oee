@@ -62,6 +62,15 @@ public class ReadDataPLC {
         return result;
     }
 
+    public static List<Short> readTargetFromPlc(MelsecMcNet melsec_net) {
+        OperateResultExOne<short[]> data = melsec_net.ReadInt16("D1111", (short) 12);
+        List<Short> result = new ArrayList<>();
+        for (int i = 0; i < data.Content.length; i++) {
+            result.add(data.Content[i]);
+        }
+        return result;
+    }
+
     public static List<Integer> readDataFake() {
         List<Integer> result = new ArrayList<>();
         Random rd = new Random();

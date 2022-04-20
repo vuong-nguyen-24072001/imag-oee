@@ -1,11 +1,14 @@
 package com.commplc.API;
 
-import com.commplc.Entity.DataEntity;
-import com.commplc.Entity.HistoryEntity;
-import com.commplc.Service.IDataService;
-import com.commplc.Service.IHistoryService;
+import com.commplc.Constant.UrlSystem;
+import com.commplc.Entity.HistoryLine1Entity;
+import com.commplc.Entity.Line1Entity;
+import com.commplc.Service.IHistoryLine1Service;
+import com.commplc.Service.ILine1Service;
 import com.commplc.Service.RealtimeDataPLC;
 import com.commplc.Utils.*;
+import com.commplc.Variable.TimeVariable;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,17 +19,19 @@ import HslCommunication.Profinet.Melsec.MelsecMcNet;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.HashMap;
 
 @RestController
 public class DataAPI {
 
     @Autowired
-    private IDataService dataService;
+    private ILine1Service line1Service;
 
     @Autowired
-    private IHistoryService historyService;
+    private IHistoryLine1Service historyLine1Service;
+
+    @Autowired
+    private TimeVariable timeVariable;
 
     @Deprecated
     @GetMapping("/getData")
@@ -37,8 +42,8 @@ public class DataAPI {
         dataPlc.put("D102", 102);
         dataPlc.put("D103", 103);
         HashMap<String, HashMap<String, Integer>> response = new HashMap<>();
-        DataEntity data = new DataEntity("1","1","6000", "40000", "20000", "20", "sdf", RealtimeDataPLC.shift);
-        dataService.save(data);
+        Line1Entity data = new Line1Entity("1","1","6000", "40000", "20000", "20", "sdf", RealtimeDataPLC.shift, "123");
+        line1Service.save(data);
         response.put("dataplc", dataPlc);
         return response;
     }
@@ -47,7 +52,7 @@ public class DataAPI {
     @GetMapping("/resetData")
     @Transactional
     public HashMap<String, String> resetData() throws InterruptedException {
-        String pathDataHistory = "./src/main/resources/DataExcel/DataHistory/OEE_" + LocalDate.now() + "_" + RealtimeDataPLC.shift.replace(" ", "-") + ".sql";
+        //String pathDataHistory = "./src/main/resources/DataExcel/DataHistory/OEE_" + LocalDate.now() + "_" + RealtimeDataPLC.shift.replace(" ", "-") + ".sql";
         HashMap<String, String> response = new HashMap<>();
         MelsecMcNet melsec_net = ConnectPLC.getMelsecNet();
         ReadDataPLC.keepDataCounterLine1(melsec_net);
@@ -63,11 +68,19 @@ public class DataAPI {
                         return response;
                     }
                     if (ReadDataPLC.doubleCheckReset(melsec_net)) {
-                        Database.backup("root","vuongnguyen04040707","oee-db",pathDataHistory);
+                        String line = "line1";
+                        int numLine = 1;
+                        UrlSystem.setPathDataHistory(line);
+                        timeVariable.setMarkTime(numLine, "");
+                        Database.backup("root","vuongnguyen04040707","oee-db","line1", UrlSystem.pathDataHistory);
                         // for deploy to mysql docker
-                        //Database.backup("root","root","oee-db",pathDataHistory);
-                        dataService.truncateTable();
-                        saveHistory(RealtimeDataPLC.historyData, response);
+                        // Database.backup("root","root","oee-db",UrlSystem.pathDataHistory);
+                        line1Service.truncateTable();
+                        switch(numLine) {
+                            case 1: 
+                                saveHistory(RealtimeDataPLC.historyData[numLine - 1], response);
+                                break;
+                        }
                         melsec_net.Write( "D1101", 0);
                         response.put("status", "success");
                         response.put("content", "reset success");
@@ -84,28 +97,23 @@ public class DataAPI {
         }
     }
 
-    @GetMapping("/writeData")
-    public void writeData() {
-        if (ConnectPLC.checkConnect()){
-            WriteDataToPLC.writeDataToPlc("D1100", 1, ConnectPLC.getMelsecNet());
-        } else {
-            System.out.println("Connect PLC failed, trying to connect to PLC again ...");
-        }
-    }
-
     @PostMapping("/setSpecification")
     public HashMap<String, String> setSpecification(@RequestBody HashMap<String, String> body) {
         System.out.println("asdfsdfsdfssfsdsfsdf" + body);
+        if (ConnectPLC.checkConnect()){
+            WriteDataToPLC.writeDataToPlc(body.get("targetAddress").toString(), Integer.parseInt(body.get("target").toString()), ConnectPLC.getMelsecNet());
+            WriteDataToPLC.writeDataToPlc(body.get("speedAddress").toString(), Integer.parseInt(body.get("speed").toString()), ConnectPLC.getMelsecNet());
+        } else {
+            System.out.println("Connect PLC failed, trying to connect to PLC again ...");
+        }
         HashMap<String, String> response = new HashMap<>();
         return response;
     }
 
-    public void saveHistory(HashMap<String, String>[] result, HashMap<String, String> response) {
-        for (HashMap<String, String> aResult : result) {
-            HistoryEntity data = new HistoryEntity(aResult.get("line"), aResult.get("status"), aResult.get("speed"),
-                    aResult.get("counterOut"), aResult.get("runtime"), aResult.get("time"), aResult.get("date"), RealtimeDataPLC.shift);
-                    historyService.save(data);
-        }
+    public void saveHistory(HashMap<String, String> aResult, HashMap<String, String> response) {
+        HistoryLine1Entity data = new HistoryLine1Entity(aResult.get("line"), aResult.get("status"), aResult.get("speed"),
+                aResult.get("counterOut"), aResult.get("runtime"), aResult.get("time"), aResult.get("date"), RealtimeDataPLC.shift);
+                historyLine1Service.save(data);
         response.put("status", "success");
     }
 
