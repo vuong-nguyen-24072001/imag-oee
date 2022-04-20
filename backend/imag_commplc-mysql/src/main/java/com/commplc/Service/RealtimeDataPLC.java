@@ -107,14 +107,18 @@ public class RealtimeDataPLC {
         Long runtime = data32.get(baseData32 + 1);
         //test 1 line (line 1)
         Long downtime = 0L;
+        Double runtimeMinute = 0.0;
+        Double downtimeMinute = 0.0;
         if (numLine == 1) {
             Long usedTime = timeVariable.getUsedTimeLine(numLine);
-            System.out.println("used time line 1: " + usedTime);
-            System.out.println("runtime line 1: " + runtime);
             if (usedTime != 0 && usedTime > 0) {
                 downtime = timeVariable.getUsedTimeLine(numLine) - runtime;
-                System.out.println(downtime);
             }
+            runtimeMinute = Math.ceil(runtime/60.0);
+            downtimeMinute = Math.floor(downtime/60.0);
+            System.out.println("used time line 1: " + usedTime + "usedtime minute: " + usedTime/60.0);
+            System.out.println("runtime line 1: " + runtime + "runtime minute (lam tron len): " + runtimeMinute);
+            System.out.println("downtime line 1:" + downtime + "downtime minute (lam tron xuong): " + downtimeMinute);
         }
 
         result.put("time", time);
@@ -123,9 +127,9 @@ public class RealtimeDataPLC {
         result.put("status", status.toString());
         result.put("counterOut", counterOut);
         result.put("speed", speed.toString());
-        result.put("runtime", runtime.toString());
+        result.put("runtime", runtimeMinute.toString());
         result.put("target", target);
-        result.put("downtim", downtime.toString());
+        result.put("downtime", downtimeMinute.toString());
 
         return  result;
     }

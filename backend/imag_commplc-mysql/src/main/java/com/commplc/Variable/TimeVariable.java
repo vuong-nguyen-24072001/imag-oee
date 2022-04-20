@@ -18,13 +18,16 @@ public class TimeVariable {
 
     private String[] markTime = {"", "", "", "", "", "", "", "", "", "", "", ""};
 
+    private boolean[] markTimeCheckReset = {false, false, false, false, false, false, false, false, false, false, false, false};
+
     private Long[] usedTimeLine = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L};
 
     public String getMarkTime(int line) {
-        if (markTime[line - 1] == ""){
+        if (markTime[line - 1] == "" || markTimeCheckReset[line - 1] == true){
             List<HistoryLine1Entity> histories = historyLine1Service.findByDateAndShiftOrderByIdDesc(LocalDate.now().toString(), RealtimeDataPLC.shift);
             if (histories != null) {
                 markTime[line - 1] = histories.get(0).getDate() + " " + histories.get(0).getTime();
+                markTimeCheckReset[line - 1] = false;
             } else {
                 switch(RealtimeDataPLC.shift) {
                     case "shift 1":
@@ -54,6 +57,10 @@ public class TimeVariable {
 
     public Long getUsedTimeLine(int line) {
         return usedTimeLine[line - 1];
+    }
+
+    public void setMarkTimeCheckReset(int line, boolean value) {
+        markTimeCheckReset[line - 1] = value;
     }
     
 }
