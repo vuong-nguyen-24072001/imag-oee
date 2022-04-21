@@ -62,8 +62,8 @@ public class ReadDataPLC {
         return result;
     }
 
-    public static List<Short> readTargetFromPlc(MelsecMcNet melsec_net) {
-        OperateResultExOne<short[]> data = melsec_net.ReadInt16("D1111", (short) 12);
+    public static List<Short> readTargetAndSpeedStandardFromPlc(MelsecMcNet melsec_net) {
+        OperateResultExOne<short[]> data = melsec_net.ReadInt16("D1111", (short) (SystemPLC.NUMBER_LINE * 2));
         List<Short> result = new ArrayList<>();
         for (int i = 0; i < data.Content.length; i++) {
             result.add(data.Content[i]);
