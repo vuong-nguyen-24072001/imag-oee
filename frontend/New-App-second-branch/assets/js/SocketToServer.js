@@ -28,9 +28,17 @@ function onMessageReceived(payload) {
       stt[i].textContent = dataLine[i].status == "1" ? "Running" : "Stop";
       fgs[i].textContent = dataLine[i].counterOut;
       const testBarChart = barChart[i];
+      const testAPQChart = apqCharts[i];
+      const testPieChart = chartPies[i];
       testBarChart.data.datasets[0].data[0] = dataLine[i].counterOut;
       testBarChart.data.datasets[0].data[1] = dataLine[i].target;
+      testAPQChart.data.datasets[0].data[0] = dataLine[i].available;
+      testAPQChart.data.datasets[0].data[1] = dataLine[i].performance;
+      testAPQChart.data.datasets[0].data[2] = dataLine[i].quantity;
+      testPieChart.data.datasets[0].data[0] = dataLine[i].oee;
+      testPieChart.data.datasets[0].data[1] = dataLine[i].oee1;
       testBarChart.update();
+      testAPQChart.update();
     }
   }
 }

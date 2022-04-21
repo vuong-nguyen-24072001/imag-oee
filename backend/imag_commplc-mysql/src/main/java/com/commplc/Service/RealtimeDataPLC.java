@@ -3,6 +3,7 @@ package com.commplc.Service;
 import com.commplc.Constant.SystemPLC;
 import com.commplc.Entity.Line1Entity;
 import com.commplc.Repository.Line1Repository;
+import com.commplc.Utils.CaculateOEE;
 import com.commplc.Utils.ConnectPLC;
 import com.commplc.Utils.ReadDataPLC;
 import com.commplc.Utils.WriteDataToExcel;
@@ -47,7 +48,7 @@ public class RealtimeDataPLC {
         if (ConnectPLC.checkConnect()){
             List<Long> test32 = ReadDataPLC.readDataUnitIntFromPlc(ConnectPLC.getMelsecNet());
             List<Short> test16 = ReadDataPLC.readDataInt16FromPlc(ConnectPLC.getMelsecNet());
-            List<Short> targets = ReadDataPLC.readTargetFromPlc(ConnectPLC.getMelsecNet());
+            List<Short> targets = ReadDataPLC.readTargetAndSpeedStandardFromPlc(ConnectPLC.getMelsecNet());
             result = new HashMap[SystemPLC.NUMBER_LINE];
             for (int i = 0; i < SystemPLC.NUMBER_LINE; i++) {
                 result[i] = caculate(i, test16, test32, targets);
@@ -96,19 +97,25 @@ public class RealtimeDataPLC {
     private HashMap<String, String> caculate(Integer line, List<Short> data16, List<Long> data32, List<Short> targets) {
         HashMap<String, String> result = new HashMap<>();
         Integer numLine = line + 1;
-        String target = targets.get(line).toString();
+        Short target = targets.get(line);
+        Short speedStandard = targets.get(line + SystemPLC.NUMBER_LINE);
         line = line*SystemPLC.NUMBER_START_DATA_INT16;
         String time = "" + LocalTime.now() + "";
         String date = "" + LocalDate.now() + "";
         Short status = data16.get(line + 1);
         Short speed = data16.get(line + 2);
         Integer baseData32 = (numLine - 1)*SystemPLC.NUMBER_START_DATA_UINT32;
-        String counterOut = data32.get(baseData32).toString();
+        Long counterOut = data32.get(baseData32);
         Long runtime = data32.get(baseData32 + 1);
         //test 1 line (line 1)
         Long downtime = 0L;
         Double runtimeMinute = 0.0;
         Double downtimeMinute = 0.0;
+        Double available = 0.0;
+        Double perfomance = 0.0;
+        Double quantity = 0.0;
+        Double oee = 0.0;
+        Double oee1 = 0.0;
         if (numLine == 1) {
             Long usedTime = timeVariable.getUsedTimeLine(numLine);
             if (usedTime != 0 && usedTime > 0) {
@@ -119,18 +126,31 @@ public class RealtimeDataPLC {
             System.out.println("used time line 1: " + usedTime + "usedtime minute: " + usedTime/60.0);
             System.out.println("runtime line 1: " + runtime + "runtime minute (lam tron len): " + runtimeMinute);
             System.out.println("downtime line 1:" + downtime + "downtime minute (lam tron xuong): " + downtimeMinute);
+            available = CaculateOEE.Available(runtimeMinute, downtimeMinute);
+            perfomance = CaculateOEE.Performance(counterOut, speedStandard, runtimeMinute, available);
+            quantity = CaculateOEE.Quantity();
+            oee = CaculateOEE.OEE(available, perfomance, quantity)*100;
+            oee1 = 100 - oee;
+            available *= 100;
+            perfomance *= 100;
+            quantity *= 100;
         }
 
         result.put("time", time);
         result.put("date", date);
         result.put("line", numLine.toString());
         result.put("status", status.toString());
-        result.put("counterOut", counterOut);
+        result.put("counterOut", counterOut.toString());
         result.put("speed", speed.toString());
         result.put("runtime", runtimeMinute.toString());
-        result.put("target", target);
+        result.put("target", target.toString());
         result.put("downtime", downtimeMinute.toString());
-
+        result.put("speedStandard", speedStandard.toString());
+        result.put("available", Long.toString(Math.round(available)));
+        result.put("performance", Long.toString(Math.round(perfomance)));
+        result.put("quantity", Long.toString(Math.round(quantity)));
+        result.put("oee", Long.toString(Math.round(oee)));
+        result.put("oee1", Long.toString(Math.round(oee1)));
         return  result;
     }
 
