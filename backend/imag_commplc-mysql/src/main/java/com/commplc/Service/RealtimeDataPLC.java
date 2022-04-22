@@ -26,7 +26,7 @@ import java.util.List;
 @Service
 public class RealtimeDataPLC {
 
-    public static String shift;
+    public static String shift = "";
 
     public static HashMap<String, String>[]  historyData;
 
@@ -45,17 +45,45 @@ public class RealtimeDataPLC {
     public void readData100Ms() {
         System.out.println("Shceduled");
         updateShift();
-        if (ConnectPLC.checkConnect()){
-            List<Long> test32 = ReadDataPLC.readDataUnitIntFromPlc(ConnectPLC.getMelsecNet());
-            List<Short> test16 = ReadDataPLC.readDataInt16FromPlc(ConnectPLC.getMelsecNet());
-            List<Short> targets = ReadDataPLC.readTargetAndSpeedStandardFromPlc(ConnectPLC.getMelsecNet());
-            result = new HashMap[SystemPLC.NUMBER_LINE];
-            for (int i = 0; i < SystemPLC.NUMBER_LINE; i++) {
-                result[i] = caculate(i, test16, test32, targets);
+        if (ConnectPLC.getMelsecNet() != null){
+            try {
+                List<Long> test32 = ReadDataPLC.readDataUnitIntFromPlc(ConnectPLC.getMelsecNet());
+                List<Short> test16 = ReadDataPLC.readDataInt16FromPlc(ConnectPLC.getMelsecNet());
+                List<Short> targets = ReadDataPLC.readTargetAndSpeedStandardFromPlc(ConnectPLC.getMelsecNet());
+                result = new HashMap[SystemPLC.NUMBER_LINE];
+                for (int i = 0; i < SystemPLC.NUMBER_LINE; i++) {
+                    result[i] = caculate(i, test16, test32, targets);
+                }
+                WriteDataToExcel.writeDataExcel(result);
+                historyData = result;
+                write(result);
+            } catch (Exception e) {
+                ConnectPLC.setMelsecNet(null);
             }
-            WriteDataToExcel.writeDataExcel(result);
-            historyData = result;
-            write(result);
+        }  else {
+            //test for 1 line
+            //caculate downtime when disconnect to plc
+            result = new HashMap[SystemPLC.NUMBER_LINE];
+            for (int line = 1; line <= SystemPLC.NUMBER_LINE; line++) {
+                HashMap<String, String> rs = new HashMap<>();
+                Double downtimeMinute = 0.0;
+                if (line == 1) {
+                    Double usedTimeMinute = timeVariable.getUsedTimeLine(line)/60.0;
+                    Double runtimeMinute = timeVariable.getRuntimeMinuteLine(line);
+                    if (runtimeMinute != 0.0) {
+                        downtimeMinute = Math.floor(usedTimeMinute - runtimeMinute);
+                    } else {
+                        downtimeMinute = Math.floor(usedTimeMinute);
+                    }
+                    System.out.println("runtime when disconnect plc: " + runtimeMinute);
+                    System.out.println("downtimeMinute when disconnect plc: " + downtimeMinute);
+                }
+                rs.put("status", "Stop");
+                rs.put("downtime", downtimeMinute.toString());
+                rs.put("plc", "disconnect");
+                result[line - 1] = rs;
+            }
+            ConnectPLC.setMelsecNet(null);
         }
     }
 
@@ -66,6 +94,14 @@ public class RealtimeDataPLC {
             template.convertAndSend("/topic/publicChatRoom", result);
         } else {
             template.convertAndSend("/topic/publicChatRoom", "{error: 'Connect to PLC faile'}");
+        }
+    }
+
+    @Scheduled(fixedDelay = 500) 
+    public void reconnectPLC() {
+        if (ConnectPLC.getMelsecNet() == null) {
+            System.out.println("Reconnceting to PLC ...");
+            ConnectPLC.conenct();
         }
     }
 
@@ -151,6 +187,9 @@ public class RealtimeDataPLC {
         result.put("quantity", Long.toString(Math.round(quantity)));
         result.put("oee", Long.toString(Math.round(oee)));
         result.put("oee1", Long.toString(Math.round(oee1)));
+
+        timeVariable.setRuntimeMinuteLine(numLine, runtimeMinute);
+
         return  result;
     }
 
