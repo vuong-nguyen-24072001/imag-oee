@@ -19,7 +19,9 @@ import HslCommunication.Profinet.Melsec.MelsecMcNet;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 public class DataAPI {
@@ -95,6 +97,20 @@ public class DataAPI {
             System.out.println("Connect PLC failed, trying to connect to PLC again ...");
             return response;
         }
+    }
+
+    @PostMapping("/filter")
+    public List<HistoryLine1Entity> filter(@RequestBody HashMap<String, String> body) {
+        List<HistoryLine1Entity> result = new ArrayList<>();
+        String line = body.get("line");
+        String shift = body.get("shift");
+        String date = body.get("date");
+        switch (line) {
+            case "line 1":
+                result = historyLine1Service.findByDateAndShiftOrderByIdDesc(date, shift);
+                break;
+        }
+        return result;
     }
 
     @PostMapping("/setSpecification")

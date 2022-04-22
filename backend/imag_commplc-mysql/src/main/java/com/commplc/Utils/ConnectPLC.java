@@ -2,6 +2,7 @@ package com.commplc.Utils;
 
 import HslCommunication.Core.Types.OperateResult;
 import HslCommunication.Profinet.Melsec.MelsecMcNet;
+
 import com.commplc.Constant.AdressPlc;
 
 public class ConnectPLC {
@@ -12,18 +13,21 @@ public class ConnectPLC {
         return melsecNet;
     }
 
+    public static void setMelsecNet(MelsecMcNet value) {
+        melsecNet = value;
+    }
+
     public static void conenct() {
         MelsecMcNet melsec_net = new MelsecMcNet(AdressPlc.ADDRESS, AdressPlc.port);
         melsec_net.setNetworkNumber((byte) 0x00);
         melsec_net.setConnectTimeOut(2000);
-        System.out.println("connect plccc");
         OperateResult connectResult = melsec_net.ConnectServer();
         if (connectResult.IsSuccess) {
-            System.out.print("Connect to PLC successfully");
             melsecNet = melsec_net;
+            System.out.println("Connect to PLC successfully");
         } else {
-            System.out.print("Connect to PLC failed: " + connectResult.Message);
             melsecNet = null;
+            System.out.println("Connect to PLC failed: " + connectResult.Message);
         }
     }
 
@@ -31,6 +35,7 @@ public class ConnectPLC {
         if (melsecNet != null) {
             return true;
         } else {
+            System.out.println("Reconnecting to plc .....");
             conenct();
             return false;
         }

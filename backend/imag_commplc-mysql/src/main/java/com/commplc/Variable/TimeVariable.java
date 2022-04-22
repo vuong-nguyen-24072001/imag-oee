@@ -22,6 +22,8 @@ public class TimeVariable {
 
     private Long[] usedTimeLine = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L};
 
+    private Double[] runtimeMinuteLine =  {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
     public String getMarkTime(int line) {
         if (markTime[line - 1] == "" || markTimeCheckReset[line - 1] == true){
             List<HistoryLine1Entity> histories = historyLine1Service.findByDateAndShiftOrderByIdDesc(LocalDate.now().toString(), RealtimeDataPLC.shift);
@@ -61,6 +63,14 @@ public class TimeVariable {
 
     public void setMarkTimeCheckReset(int line, boolean value) {
         markTimeCheckReset[line - 1] = value;
+    }
+
+    public void setRuntimeMinuteLine(int line, Double value) {
+        runtimeMinuteLine[line - 1] = value;
+    }
+
+    public Double getRuntimeMinuteLine(int line) {
+        return runtimeMinuteLine[line - 1];
     }
     
 }
