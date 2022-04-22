@@ -1,6 +1,7 @@
 const btnSetting = document.querySelector(".btn-1");
 const btnSubmmit = document.querySelector(".btn-submit");
 const form = document.querySelector(".form");
+const overlay = document.querySelector(".overlay");
 const btnReset = document.querySelector(".btn-reset");
 const inputSpeed = document.getElementById("speedStandard");
 const inputTarget = document.getElementById("target");
@@ -17,7 +18,15 @@ const fgs = document.querySelectorAll(".fgs");
 
 btnSetting.addEventListener("click", function () {
   form.classList.toggle("hidden");
+  overlay.classList.remove("hidden");
 });
+
+const closeModal = function () {
+  form.classList.add("hidden");
+  overlay.classList.add("hidden");
+};
+
+overlay.addEventListener("click", closeModal);
 
 btnSubmmit.addEventListener("click", function () {
   const data = {
@@ -43,6 +52,7 @@ btnSubmmit.addEventListener("click", function () {
     });
 
   form.classList.add("hidden");
+  overlay.classList.add("hidden");
 });
 
 btnReset.addEventListener("click", function () {
