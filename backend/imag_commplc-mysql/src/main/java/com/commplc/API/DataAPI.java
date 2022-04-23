@@ -2,7 +2,6 @@ package com.commplc.API;
 
 import com.commplc.Constant.UrlSystem;
 import com.commplc.Entity.HistoryLine1Entity;
-import com.commplc.Entity.Line1Entity;
 import com.commplc.Service.IHistoryLine1Service;
 import com.commplc.Service.ILine1Service;
 import com.commplc.Service.RealtimeDataPLC;
@@ -44,8 +43,6 @@ public class DataAPI {
         dataPlc.put("D102", 102);
         dataPlc.put("D103", 103);
         HashMap<String, HashMap<String, Integer>> response = new HashMap<>();
-        Line1Entity data = new Line1Entity("1","1","6000", "40000", "20000", "20", "sdf", RealtimeDataPLC.shift, "123");
-        line1Service.save(data);
         response.put("dataplc", dataPlc);
         return response;
     }
@@ -128,7 +125,8 @@ public class DataAPI {
 
     public void saveHistory(HashMap<String, String> aResult, HashMap<String, String> response) {
         HistoryLine1Entity data = new HistoryLine1Entity(aResult.get("line"), aResult.get("status"), aResult.get("speed"),
-                aResult.get("counterOut"), aResult.get("runtime"), aResult.get("time"), aResult.get("date"), RealtimeDataPLC.shift);
+        aResult.get("counterOut"), aResult.get("runtime"), aResult.get("time"), aResult.get("date"), RealtimeDataPLC.shift, aResult.get("target"), 
+        aResult.get("downtime"), aResult.get("speedStandard"), aResult.get("available"), aResult.get("perfomance"), aResult.get("quanlity"), aResult.get("oee"));
                 historyLine1Service.save(data);
         response.put("status", "success");
     }

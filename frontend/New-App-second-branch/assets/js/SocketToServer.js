@@ -39,6 +39,7 @@ function onMessageReceived(payload) {
       testPieChart.data.datasets[0].data[1] = dataLine[i].oee1;
       testBarChart.update();
       testAPQChart.update();
+      testPieChart.update();
     }
   }
 }

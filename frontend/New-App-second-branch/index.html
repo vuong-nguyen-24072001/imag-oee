@@ -1,143 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./assets/css/main.css" />
-    <link rel="stylesheet" href="./assets/css/Chart.min.css" />
-    <link rel="stylesheet" href="./assets/css/grid.css" />
-    <title>Imag</title>
-  </head>
 
-  <body>
-    <!-- GRID -->
-    <!-- <header class="header">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./assets/css/main.css" />
+  <link rel="stylesheet" href="./assets/css/Chart.min.css" />
+  <link rel="stylesheet" href="./assets/css/grid.css" />
+  <title>Imag</title>
+</head>
+
+<body>
+  <!-- GRID -->
+  <!-- <header class="header">
       <button class="btn-home">Home</button>
       <button class="btn-history">History</button>
     </header> -->
-    <!-- <header class="sidebar">Sidebar</header> -->
-    <div class="wrap">
-      <div class="form hidden">
-        <div class="input-form">
-          <h3>Fill your value</h3>
-          <label for="target">Target</label>
-          <input type="number" name="" id="target" placeholder="target" />
-          <input
-            type="hidden"
-            name=""
-            id="targetAddress"
-            class="targetAddress"
-            value="D1111"
-          />
-          <label for="speed" class="label-speed">Speed</label>
-          <input type="number" name="" id="speedStandard" placeholder="speed" />
-          <input
-            type="hidden"
-            name=""
-            id="speedAddress"
-            class="speedAddress"
-            value="D1123"
-          />
-        </div>
-        <button class="btn btn-submit">Submit</button>
+  <!-- <header class="sidebar">Sidebar</header> -->
+  <div class="wrap">
+    <div class="form hidden">
+      <div class="input-form">
+        <h3>Fill your value</h3>
+        <label for="target">Target</label>
+        <input type="number" name="" id="target" placeholder="target" />
+        <input type="hidden" name="" id="targetAddress" class="targetAddress" value="D1111" />
+        <label for="speed" class="label-speed">Speed</label>
+        <input type="number" name="" id="speedStandard" placeholder="speed" />
+        <input type="hidden" name="" id="speedAddress" class="speedAddress" value="D1123" />
       </div>
-      <div class="row filter-bar">
-        <div class="col select-filter">
-          <div class="filter-1">
-            <label class="select" for="slct">
-              <select id="slct" required="required" class="select-form">
-                <option value="" disabled="disabled" selected="selected">
-                  Select option
-                </option>
-                <option value="#">One</option>
-                <option value="#">Two</option>
-                <option value="#">Three</option>
-              </select>
-            </label>
-            <label class="select" for="slct">
-              <select id="slct" required="required">
-                class="select-form"
-                <option value="" disabled="disabled" selected="selected">
-                  Select option
-                </option>
-                <option value="#">One</option>
-                <option value="#">Two</option>
-                <option value="#">Three</option>
-              </select>
-            </label>
-          </div>
-          <div class="filter-2">
-            <label class="select" for="slct">
-              <select id="slct" required="required">
-                class="select-form"
-                <option value="" disabled="disabled" selected="selected">
-                  Select option
-                </option>
-                <option value="#">One</option>
-                <option value="#">Two</option>
-                <option value="#">Three</option>
-              </select>
-            </label>
-            <button class="filter-btn">Submit</button>
-          </div>
+      <button class="btn btn-submit">Submit</button>
+    </div>
+    <div class="row filter-bar">
+      <div class="col select-filter">
+        <div class="filter-1">
+          <label class="select" for="slct">
+            <select id="slct-date" required="required" class="select-form">
+              <option value="" disabled="disabled" selected="selected">
+                Select option
+              </option>
+              <option value="2022-04-21">2022-04-21</option>
+              <option value="2022-04-22">2022-04-22</option>
+              <option value="2022-04-23">2022-04-23</option>
+              <option value="2022-04-24">2022-04-24</option>
+            </select>
+          </label>
+          <label class="select" for="slct">
+            <select id="slct-shift" required="required">
+              class="select-form"
+              <option value="" disabled="disabled" selected="selected">
+                Select option
+              </option>
+              <option value="shift 1">Shift 1</option>
+              <option value="shift 2">Shift 2</option>
+              <option value="shift 3">Shift 3</option>
+            </select>
+          </label>
+        </div>
+        <div class="filter-2">
+          <label class="select" for="slct">
+            <select id="slct-line" required="required">
+              class="select-form"
+              <option value="" disabled="disabled" selected="selected">
+                Select option
+              </option>
+              <option value="line 1">line 1</option>
+            </select>
+          </label>
+          <button class="filter-btn" id="filter-btn">Submit</button>
         </div>
       </div>
-      <div class="grid container">
-        <div class="row">
-          <div class="col l-4 m-6 c-12 col-container">
-            <div class="table">
-              <div class="grid grid-1">
-                <div class="row">
-                  <div class="col l-6 m-6 c-6">
-                    <div class="table-content">
-                      <h2>Line 1</h2>
-                      <table>
-                        <tr>
-                          <th>Target</th>
-                          <th>FGs</th>
-                        </tr>
-                        <tr>
-                          <td class="target">6000</td>
-                          <td class="fgs">4345</td>
-                        </tr>
-                      </table>
-                    </div>
-                  </div>
-                  <div class="col l-6 m-6 c-6">
-                    <div class="table-content">
-                      <h2 class="status">Running</h2>
-                      <table>
-                        <tr>
-                          <th>Run Time</th>
-                          <th>Down Time</th>
-                        </tr>
-                        <tr>
-                          <td class="runtime">144</td>
-                          <td class="downtime">25</td>
-                        </tr>
-                      </table>
-                    </div>
+    </div>
+    <div class="grid container">
+      <div class="row">
+        <div class="col l-4 m-6 c-12 col-container">
+          <div class="table">
+            <div class="grid grid-1">
+              <div class="row">
+                <div class="col l-6 m-6 c-6">
+                  <div class="table-content">
+                    <h2>Line 1</h2>
+                    <table>
+                      <tr>
+                        <th>Target</th>
+                        <th>FGs</th>
+                      </tr>
+                      <tr>
+                        <td class="target">6000</td>
+                        <td class="fgs">4345</td>
+                      </tr>
+                    </table>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col l-6 m-6 c-6">
-                    <canvas id="chart-APQ" class="chart-APQ"></canvas>
-                  </div>
-                  <div class="col l-6 m-6 c-6">
-                    <canvas
-                      id="chart-pie"
-                      style="position: relative; height: 166px; width: 200px"
-                      class="chart-pie"
-                    ></canvas>
-                  </div>
-                  <div class="col l-12 m-12 c-12">
-                    <canvas id="myChart" class="chart-data"></canvas>
+                <div class="col l-6 m-6 c-6">
+                  <div class="table-content">
+                    <h2 class="status">Running</h2>
+                    <table>
+                      <tr>
+                        <th>Run Time</th>
+                        <th>Down Time</th>
+                      </tr>
+                      <tr>
+                        <td class="runtime">144</td>
+                        <td class="downtime">25</td>
+                      </tr>
+                    </table>
                   </div>
                 </div>
-                <div class="btn-container">
-                  <button class="btn-reset btn">Reset Data</button>
-                  <button class="btn btn-1">Setting</button>
+              </div>
+              <div class="row">
+                <div class="col l-6 m-6 c-6">
+                  <canvas id="chart-APQ" class="chart-APQ"></canvas>
+                </div>
+                <div class="col l-6 m-6 c-6">
+                  <canvas id="chart-pie" style="position: relative; height: 166px; width: 200px"
+                    class="chart-pie"></canvas>
+                </div>
+                <div class="col l-12 m-12 c-12">
+                  <canvas id="myChart" class="chart-data"></canvas>
+                </div>
+              </div>
+              <div class="btn-container">
+                <button class="btn-reset btn">Reset Data</button>
+                <button class="btn btn-1">Setting</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col l-4 m-6 c-12 col-container visibility-hidden" id="table-history">
+          <div class="table">
+            <div class="grid grid-1">
+              <div class="row">
+                <div class="col l-6 m-6 c-6">
+                  <div class="table-content">
+                    <h2>Line 1</h2>
+                    <table>
+                      <tr>
+                        <th>Target</th>
+                        <th>FGs</th>
+                      </tr>
+                      <tr>
+                        <td class="target-history">6000</td>
+                        <td class="fgs-history">4345</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <div class="col l-6 m-6 c-6">
+                  <div class="table-content">
+                    <h2 class="status-history">Running</h2>
+                    <table>
+                      <tr>
+                        <th>Run Time</th>
+                        <th>Down Time</th>
+                      </tr>
+                      <tr>
+                        <td class="runtime-history">144</td>
+                        <td class="downtime-history">25</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col l-6 m-6 c-6">
+                  <canvas id="chart-APQ" class="chart-APQ"></canvas>
+                </div>
+                <div class="col l-6 m-6 c-6">
+                  <canvas id="chart-pie" style="position: relative; height: 166px; width: 200px"
+                    class="chart-pie"></canvas>
+                </div>
+                <div class="col l-12 m-12 c-12">
+                  <canvas id="myChart" class="chart-data"></canvas>
                 </div>
               </div>
             </div>
@@ -145,14 +179,17 @@
         </div>
       </div>
     </div>
-    <div class="overlay hidden"></div>
-  </body>
-  <script src="./assets/js/Chart.min.js"></script>
-  <script src="./assets/js/chartAPQ.js"></script>
-  <script src="./assets/js/chartPie.js"></script>
-  <script src="./assets/js/dataChart.js"></script>
-  <script src="./assets/js/sockjs.min.js"></script>
-  <script src="./assets/js/stomp.min.js"></script>
-  <script src="./assets/js/SocketToServer.js"></script>
-  <script src="./assets/js/main.js"></script>
+  </div>
+  <div class="overlay hidden"></div>
+</body>
+<script src="./assets/js/Chart.min.js"></script>
+<script src="./assets/js/chartAPQ.js"></script>
+<script src="./assets/js/chartPie.js"></script>
+<script src="./assets/js/dataChart.js"></script>
+<script src="./assets/js/sockjs.min.js"></script>
+<script src="./assets/js/stomp.min.js"></script>
+<script src="./assets/js/SocketToServer.js"></script>
+<script src="./assets/js/main.js"></script>
+<script src="./assets/js//history.js"></script>
+
 </html>

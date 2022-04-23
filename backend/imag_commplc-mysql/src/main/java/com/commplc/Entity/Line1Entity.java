@@ -7,7 +7,9 @@ import javax.persistence.Table;
 @Table(name = "line1")
 public class Line1Entity extends BaseEntity {
 
-    public Line1Entity(String line, String status, String speed, String counterOut, String runtime, String time, String date, String shift, String target) {
+    public Line1Entity(String line, String status, String speed, String counterOut, String runtime, String time,
+                       String date, String shift, String target, String downtime, String speedStandard, String available, String performance,
+                       String quanlity, String oee) {
         this.setLine(line);
         this.setStatus(status);
         this.setSpeed(speed);
@@ -17,6 +19,12 @@ public class Line1Entity extends BaseEntity {
         this.setDate(date);
         this.setShift(shift);
         this.setTarget(target);
+        this.setDowntime(downtime);
+        this.setSpeedStandard(speedStandard);
+        this.setAvailable(available);
+        this.setPerformance(performance);
+        this.setQuanlity(quanlity);
+        this.setOee(oee);
     }
 
     public Line1Entity() {

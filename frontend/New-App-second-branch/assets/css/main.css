@@ -118,6 +118,10 @@ td {
   display: none !important;
 }
 
+.visibility-hidden {
+  visibility: hidden;
+}
+
 /* HEADER */
 .header {
   position: fixed;

@@ -55,6 +55,9 @@ public abstract class BaseEntity {
     @Column(name = "downtime")
     private String downtime;
 
+    @Column(name = "speedstandard")
+    private String speedStandard;
+
     public Long getId() {
         return id;
     }
@@ -169,6 +172,14 @@ public abstract class BaseEntity {
 
     public void setDowntime(String downtime) {
         this.downtime = downtime;
+    }
+
+    public void setSpeedStandard(String speedStandard) {
+        this.speedStandard = speedStandard;
+    }
+
+    public String getSpeedStandard() {
+        return speedStandard;
     }
 
     

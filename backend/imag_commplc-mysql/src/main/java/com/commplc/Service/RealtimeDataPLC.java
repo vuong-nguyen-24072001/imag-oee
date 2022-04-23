@@ -149,7 +149,7 @@ public class RealtimeDataPLC {
         Double downtimeMinute = 0.0;
         Double available = 0.0;
         Double perfomance = 0.0;
-        Double quantity = 0.0;
+        Double quanlity = 0.0;
         Double oee = 0.0;
         Double oee1 = 0.0;
         if (numLine == 1) {
@@ -164,12 +164,12 @@ public class RealtimeDataPLC {
             System.out.println("downtime line 1:" + downtime + "downtime minute (lam tron xuong): " + downtimeMinute);
             available = CaculateOEE.Available(runtimeMinute, downtimeMinute);
             perfomance = CaculateOEE.Performance(counterOut, speedStandard, runtimeMinute, available);
-            quantity = CaculateOEE.Quantity();
-            oee = CaculateOEE.OEE(available, perfomance, quantity)*100;
+            quanlity = CaculateOEE.Quantity();
+            oee = CaculateOEE.OEE(available, perfomance, quanlity)*100;
             oee1 = 100 - oee;
             available *= 100;
             perfomance *= 100;
-            quantity *= 100;
+            quanlity *= 100;
         }
 
         result.put("time", time);
@@ -184,7 +184,7 @@ public class RealtimeDataPLC {
         result.put("speedStandard", speedStandard.toString());
         result.put("available", Long.toString(Math.round(available)));
         result.put("performance", Long.toString(Math.round(perfomance)));
-        result.put("quantity", Long.toString(Math.round(quantity)));
+        result.put("quanlity", Long.toString(Math.round(quanlity)));
         result.put("oee", Long.toString(Math.round(oee)));
         result.put("oee1", Long.toString(Math.round(oee1)));
 
@@ -201,7 +201,8 @@ public class RealtimeDataPLC {
             switch(aResult.get("line")) {
                 case "1":
                     line1Repository.save(new Line1Entity(aResult.get("line"), aResult.get("status"), aResult.get("speed"),
-                    aResult.get("counterOut"), aResult.get("runtime"), aResult.get("time"), aResult.get("date"), shift, aResult.get("target")));
+                    aResult.get("counterOut"), aResult.get("runtime"), aResult.get("time"), aResult.get("date"), shift, aResult.get("target"), 
+                    aResult.get("downtime"), aResult.get("speedStandard"), aResult.get("available"), aResult.get("performance"), aResult.get("quanlity"), aResult.get("oee")));
                     break;
             }
         }
